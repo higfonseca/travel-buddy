@@ -1,0 +1,11 @@
+GRU,BRC,10
+BRC,SCL,5
+GRU,CDG,75
+GRU,SCL,20
+GRU,ORL,56
+ORL,CDG,5
+SCL,ORL,20
+
+
+https://gist.github.com/stella-yc/49a7b96679ab3bf06e26421fc81b5636
+https://medium.com/@jpena91/dijkstras-algorithm-finding-the-shortest-path-in-javascript-a7247afe93b2
