@@ -1,6 +1,7 @@
 const args = process.argv.slice(2)
 const readline = require('readline')
 const fs = require('fs')
+const dijkstra = require('./src/dijkstra.js')
 
 const cli = readline.createInterface({ input: process.stdin, output: process.stdout })
 
@@ -9,25 +10,33 @@ function error (message) {
   cli.close()
 }
 
+function removeUndefined (array) {
+  return array.filter(item => item !== undefined && item !== '')
+}
+
 function readFile (filePath) {
   const fileData = fs.readFileSync(filePath, 'utf8')
   const lines = fileData.split('\n')
 
-  return lines.map(line => {
+  const flights = lines.map(line => {
     const item = line.split(',')
     return {
       departure: item[0],
       destination: item[1],
-      cost: item[2]
+      cost: parseInt(item[2])
     }
   })
+
+  return removeUndefined(flights)
 }
 
 function listAirports (flights) {
   const airportsFrom = flights.map(flight => flight.departure)
   const airportsTo = flights.map(flight => flight.destination)
-  const airports = [...airportsFrom, ...airportsTo]
-  return [...new Set(airports)]
+  const airportsAll = [...airportsFrom, ...airportsTo]
+
+  const airportsWithoutUndefined = removeUndefined(airportsAll)
+  return [...new Set(airportsWithoutUndefined)]
 }
 
 function departsFrom (airport, flights) {
@@ -63,25 +72,30 @@ function main () {
     })
 
     const otherAirports = airports.filter(airport => airport !== from)
-    const otherFlights = otherAirports.map(other => {
-      const nodes = departsFrom(other, flights)
+    const secondFlights = otherAirports.map(item => departsFrom(item, flights))
+    const mergedSecondFlights = [].concat.apply([], secondFlights)
 
-      const others = {}
-      const bbb = {}
-      const aaa = nodes.map(item => {
-        bbb[item.destination] = item.cost
-        return bbb
+    const connections = {}
+    otherAirports.map(departure => {
+      const filterFrom = mergedSecondFlights.filter(flight => flight.departure === departure)
+      const groupFrom = {}
+      filterFrom.map(item => {
+        const destination = item.destination === to ? 'finish' : item.destination
+        return groupFrom[destination] = item.cost
       })
-      others[other] = aaa
-      return others
+
+      connections[departure] = groupFrom
     })
 
+    delete connections[to]
+    const graph = { start, ...connections, finish: {} }
+    const bestRoute = dijkstra.dijkstra(graph)
 
-    // console.log({start, finish: {}})
-    // console.log({otherAirports})
-    console.log(otherFlights[0])
+    const { path, distance } = bestRoute
+    delete path['start']
+    delete path['finish']
 
-    // console.log(`best route: ${answer}`)
+    console.log(`best route: ${path} > ${distance}`)
 
     cli.close()
   });
