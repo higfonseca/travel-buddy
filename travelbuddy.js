@@ -1,41 +1,18 @@
 const args = process.argv.slice(2)
 const readline = require('readline')
-const fs = require('fs')
-const dijkstra = require('./src/dijkstra.js')
+
+const readFile = require('./src/helpers/readFile.js')
+const removeUndefined = require('./src/helpers/removeUndefined.js')
+const dijkstra = require('./src/helpers/dijkstra.js')
 
 const cli = readline.createInterface({ input: process.stdin, output: process.stdout })
-
-function error (message) {
-  cli.write(message + '\n')
-  cli.close()
-}
-
-function removeUndefined (array) {
-  return array.filter(item => item !== undefined && item !== '')
-}
-
-function readFile (filePath) {
-  const fileData = fs.readFileSync(filePath, 'utf8')
-  const lines = fileData.split('\n')
-
-  const flights = lines.map(line => {
-    const item = line.split(',')
-    return {
-      departure: item[0],
-      destination: item[1],
-      cost: parseInt(item[2])
-    }
-  })
-
-  return removeUndefined(flights)
-}
 
 function listAirports (flights) {
   const airportsFrom = flights.map(flight => flight.departure)
   const airportsTo = flights.map(flight => flight.destination)
   const airportsAll = [...airportsFrom, ...airportsTo]
 
-  const airportsWithoutUndefined = removeUndefined(airportsAll)
+  const airportsWithoutUndefined = removeUndefined.execute(airportsAll)
   return [...new Set(airportsWithoutUndefined)]
 }
 
@@ -43,33 +20,31 @@ function departsFrom (airport, flights) {
   return flights.filter(flight => flight.departure === airport)
 }
 
+function setDepartureArrival (itinerary) {
+  const depArrival = itinerary.split('-')
+  if (depArrival.length === 1) throw 'itinerary must be filled following the pattern: FROM-TO'
 
+  return { from: depArrival[0], to: depArrival[1] }
+}
 
 function main () {
-  if (!args.length) {
-    error('ERROR: please, inform the routes csv file path as first argument.')
-    return
-  }
-
-  const flights = readFile(args[0])
-
+  if (!args.length) throw 'please, inform the routes csv file path as first argument.'
+  const flights = readFile.execute(args[0])
 
   cli.question('please enter the route: ', (itinerary) => {
-    const departureArrival = itinerary.split('-')
-    if (departureArrival.length === 1) {
-      error('ERROR: itinerary must be filled following the pattern: FROM-TO')
-      return
-    }
-
+    const { from, to } = setDepartureArrival(itinerary)
     const airports = listAirports(flights)
-    const from = departureArrival[0]
-    const to = departureArrival[1]
+
+    const checkDirectFlight = flights.find(flight => flight.departure === from && flight.destination === to)
 
     const fromDeparture = departsFrom(from, flights)
-    const start = {}
+    const firstFlights = {}
     fromDeparture.map(item => {
-      start[item.destination] = item.cost
+      firstFlights[item.destination] = item.cost
     })
+
+    const start = {}
+    start[from] = firstFlights
 
     const otherAirports = airports.filter(airport => airport !== from)
     const secondFlights = otherAirports.map(item => departsFrom(item, flights))
@@ -80,26 +55,22 @@ function main () {
       const filterFrom = mergedSecondFlights.filter(flight => flight.departure === departure)
       const groupFrom = {}
       filterFrom.map(item => {
-        const destination = item.destination === to ? 'finish' : item.destination
-        return groupFrom[destination] = item.cost
+        // const destination = item.destination === to ? 'finish' : item.destination
+        return groupFrom[item.destination] = item.cost
       })
 
       connections[departure] = groupFrom
     })
 
-    delete connections[to]
-    const graph = { start, ...connections, finish: {} }
-    const bestRoute = dijkstra.dijkstra(graph)
+    const graph = { ...start, ...connections }
+    const bestRoute = dijkstra.execute(graph, from, to)
 
     const { path, distance } = bestRoute
-    delete path['start']
-    delete path['finish']
+    if (distance === Infinity) throw 'unable to locate best route. Please, try again...'
 
-    console.log(`best route: ${path} > ${distance}`)
-
+    cli.write(`best route: ${path.join(' - ')} > ${distance} \n`)
     cli.close()
   });
 }
-
 
 main()
