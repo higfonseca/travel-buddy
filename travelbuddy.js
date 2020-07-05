@@ -35,8 +35,6 @@ function main () {
     const { from, to } = setDepartureArrival(itinerary)
     const airports = listAirports(flights)
 
-    const checkDirectFlight = flights.find(flight => flight.departure === from && flight.destination === to)
-
     const fromDeparture = departsFrom(from, flights)
     const firstFlights = {}
     fromDeparture.map(item => {
@@ -47,6 +45,7 @@ function main () {
     start[from] = firstFlights
 
     const otherAirports = airports.filter(airport => airport !== from)
+
     const secondFlights = otherAirports.map(item => departsFrom(item, flights))
     const mergedSecondFlights = [].concat.apply([], secondFlights)
 
@@ -55,7 +54,6 @@ function main () {
       const filterFrom = mergedSecondFlights.filter(flight => flight.departure === departure)
       const groupFrom = {}
       filterFrom.map(item => {
-        // const destination = item.destination === to ? 'finish' : item.destination
         return groupFrom[item.destination] = item.cost
       })
 
