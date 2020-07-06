@@ -3,10 +3,10 @@ import {
   SetDepartureArrivalUseCase,
   ListAirportsUseCase,
   FindFlightsDepartingFromAirportUseCase
-} from 'app/usecases'
-import { dijkstra, DijkstraResponse } from '../helpers/dijkstra'
+} from 'app/modules/flight/usecases'
+import { dijkstra, DijkstraResponse } from '../../../helpers/dijkstra'
 import { FlightInterface } from '../domain/interfaces/FlightInterface'
-import { readFile } from '../helpers/readFile'
+import { readFile } from '../../../helpers/readFile'
 
 export class FindBestRouteUseCase {
   constructor (

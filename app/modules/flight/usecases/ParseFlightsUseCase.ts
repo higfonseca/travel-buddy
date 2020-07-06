@@ -1,5 +1,5 @@
 import { FlightInterface } from '../domain/interfaces/FlightInterface'
-import { removeUndefined } from '../helpers/removeUndefined'
+import { removeUndefined } from '../../../helpers/removeUndefined'
 
 export class ParseFlightsUseCase {
   execute (fileLines: string[]): FlightInterface[] {

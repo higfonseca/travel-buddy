@@ -1,4 +1,4 @@
-import { FlightInterface } from "app/domain/interfaces/FlightInterface"
+import { FlightInterface } from "../domain/interfaces/FlightInterface"
 
 export class FindFlightsDepartingFromAirportUseCase {
   execute (airport: string, flights: FlightInterface[]): FlightInterface[] {

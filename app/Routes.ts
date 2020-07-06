@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { FlightController } from './input/controllers/FlightController'
-import { CoreController } from 'app/input/controllers/CoreController'
+import { FlightController, CoreController } from './modules/flight/input/controllers'
 
 export class Routes {
   execute () {
