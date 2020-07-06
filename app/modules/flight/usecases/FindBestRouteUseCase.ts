@@ -4,9 +4,9 @@ import {
   ListAirportsUseCase,
   FindFlightsDepartingFromAirportUseCase
 } from 'app/modules/flight/usecases'
-import { dijkstra, DijkstraResponse } from '../../../helpers/dijkstra'
+import { dijkstra, DijkstraResponse } from '../../core/helpers/dijkstra'
 import { FlightInterface } from '../domain/interfaces/FlightInterface'
-import { readFile } from '../../../helpers/readFile'
+import { readFile } from '../../core/helpers/readFile'
 
 export class FindBestRouteUseCase {
   constructor (
