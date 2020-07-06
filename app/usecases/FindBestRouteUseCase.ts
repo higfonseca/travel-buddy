@@ -1,9 +1,12 @@
-import { ParseFlightsUseCase } from 'app/usecases/ParseFlightsUseCase'
-import { SetDepartureArrivalUseCase } from 'app/usecases/SetDepartureArrivalUseCase'
-import { ListAirportsUseCase } from 'app/usecases/ListAirportsUseCase'
-import { FindFlightsDepartingFromAirportUseCase } from 'app/usecases/FindFlightsDepartingFromAirportUseCase'
-import { dijkstra, DijkstraResponse } from 'app/helpers/dijkstra'
-import { FlightInterface } from 'app/domain/interfaces/FlightInterface'
+import {
+  ParseFlightsUseCase,
+  SetDepartureArrivalUseCase,
+  ListAirportsUseCase,
+  FindFlightsDepartingFromAirportUseCase
+} from 'app/usecases'
+import { dijkstra, DijkstraResponse } from '../helpers/dijkstra'
+import { FlightInterface } from '../domain/interfaces/FlightInterface'
+import { readFile } from '../helpers/readFile'
 
 export class FindBestRouteUseCase {
   constructor (
@@ -13,7 +16,8 @@ export class FindBestRouteUseCase {
     private readonly findFlightsDepartingFromAirportUseCase: FindFlightsDepartingFromAirportUseCase,
   ) {}
 
-  execute = (flightsFile: string[], itinerary: string): DijkstraResponse => {
+  execute (flightsFilePath: string, itinerary: string): DijkstraResponse {
+    const flightsFile = readFile(flightsFilePath)
     const flights = this.parseFlightsUseCase.execute(flightsFile)
 
     const { from, to } = this.setDepartureArrivalUseCase.execute(itinerary)

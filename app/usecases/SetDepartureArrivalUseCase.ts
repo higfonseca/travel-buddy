@@ -1,4 +1,4 @@
-import { DepartureArrivalInterface } from "app/domain/interfaces/DepartureArrivalInterface"
+import { DepartureArrivalInterface } from "../domain/interfaces/DepartureArrivalInterface"
 
 export class SetDepartureArrivalUseCase {
   execute (itinerary: string): DepartureArrivalInterface {

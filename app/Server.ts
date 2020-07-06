@@ -1,11 +1,11 @@
 import express from 'express'
 import cors from 'cors'
-import { routes } from './routes'
+import { Routes } from './Routes'
 
-class Server {
+export class Server {
   public express: express.Application
 
-  public constructor () {
+  constructor () {
     this.express = express()
 
     this.middlewares()
@@ -18,9 +18,7 @@ class Server {
   }
 
   private routes (): void {
-    this.express.use(routes)
+    const routes = new Routes()
+    this.express.use(routes.execute)
   }
 }
-
-const server = new Server().express
-export { server }
