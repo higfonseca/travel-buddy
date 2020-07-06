@@ -1,17 +1,36 @@
-const dijkstra = require('../helpers/dijkstra')
-const FindFlightsDepartingFromAirportUseCase = require('./FindFlightsDepartingFromAirportUseCase')
-const ListAirportsUseCase = require('./ListAirportsUseCase')
-const ParseFlightsUseCase = require('./ParseFlightsUseCase')
-const SetDepartureArrivalUseCase = require('./SetDepartureArrivalUseCase')
+import { ParseFlightsUseCase } from 'app/usecases/ParseFlightsUseCase'
+import { SetDepartureArrivalUseCase } from 'app/usecases/SetDepartureArrivalUseCase'
+import { ListAirportsUseCase } from 'app/usecases/ListAirportsUseCase'
+import { FindFlightsDepartingFromAirportUseCase } from 'app/usecases/FindFlightsDepartingFromAirportUseCase'
+import { dijkstra, DijkstraResponse } from 'app/helpers/dijkstra'
+import { FlightInterface } from 'app/domain/interfaces/FlightInterface'
 
-exports.execute = (cli, flightsFile) => {
-  const flights = ParseFlightsUseCase.execute(flightsFile)
+export class FindBestRouteUseCase {
+  constructor (
+    private readonly parseFlightsUseCase: ParseFlightsUseCase,
+    private readonly setDepartureArrivalUseCase: SetDepartureArrivalUseCase,
+    private readonly listAirportsUseCase: ListAirportsUseCase,
+    private readonly findFlightsDepartingFromAirportUseCase: FindFlightsDepartingFromAirportUseCase,
+  ) {}
 
-  cli.question('please enter the route: ', (itinerary) => {
-    const { from, to } = SetDepartureArrivalUseCase.execute(itinerary)
-    const airports = ListAirportsUseCase.execute(flights)
+  execute = (flightsFile: string[], itinerary: string): DijkstraResponse => {
+    const flights = this.parseFlightsUseCase.execute(flightsFile)
 
-    const fromDeparture = FindFlightsDepartingFromAirportUseCase.execute(from, flights)
+    const { from, to } = this.setDepartureArrivalUseCase.execute(itinerary)
+    const airports = this.listAirportsUseCase.execute(flights)
+
+    const start = this.findFirstFlights(from, flights)
+    const connections = this.findConnectionFlights(airports, from, flights)
+
+    const graph = { ...start, ...connections }
+    const bestRoute = dijkstra(graph, from, to)
+
+    if (bestRoute.distance === Infinity) throw 'unable to locate best route. Please, try again...'
+    return bestRoute
+  }
+
+  private findFirstFlights (from: string, flights: FlightInterface[]) {
+    const fromDeparture = this.findFlightsDepartingFromAirportUseCase.execute(from, flights)
     const firstFlights = {}
     fromDeparture.map(item => {
       firstFlights[item.destination] = item.cost
@@ -20,9 +39,15 @@ exports.execute = (cli, flightsFile) => {
     const start = {}
     start[from] = firstFlights
 
+    return start
+  }
+
+  private findConnectionFlights (airports: string[], from: string, flights: FlightInterface[]) {
     const otherAirports = airports.filter(airport => airport !== from)
 
-    const secondFlights = otherAirports.map(item => FindFlightsDepartingFromAirportUseCase.execute(item, flights))
+    const secondFlights = otherAirports.map(item => {
+      return this.findFlightsDepartingFromAirportUseCase.execute(item, flights)
+    })
     const mergedSecondFlights = [].concat.apply([], secondFlights)
 
     const connections = {}
@@ -36,13 +61,6 @@ exports.execute = (cli, flightsFile) => {
       connections[departure] = groupFrom
     })
 
-    const graph = { ...start, ...connections }
-    const bestRoute = dijkstra.execute(graph, from, to)
-
-    const { path, distance } = bestRoute
-    if (distance === Infinity) throw 'unable to locate best route. Please, try again...'
-
-    cli.write(`best route: ${path.join(' - ')} > ${distance} \n`)
-    cli.close()
-  });
+    return connections
+  }
 }

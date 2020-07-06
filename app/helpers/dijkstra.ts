@@ -2,6 +2,12 @@
  * @author Jonathan Hasenburg
  * @description Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks.
  */
+// @ts-nocheck
+
+export interface DijkstraResponse {
+  path: string[]
+  distance: number
+}
 
 const lowestCostNode = (costs, processed) => {
   return Object.keys(costs).reduce((lowest, node) => {
@@ -15,7 +21,7 @@ const lowestCostNode = (costs, processed) => {
 };
 
 // function that returns the minimum cost and path to reach Finish
-exports.execute = (graph, startNodeName = 'start', endNodeName = 'finish') => {
+export const dijkstra = (graph, startNodeName = 'start', endNodeName = 'finish'): DijkstraResponse => {
 
   // track the lowest cost to reach each node
   let costs = {};
@@ -61,4 +67,4 @@ exports.execute = (graph, startNodeName = 'start', endNodeName = 'finish') => {
   };
 
   return results;
-};
+}

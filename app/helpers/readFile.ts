@@ -1,6 +1,6 @@
-const fs = require('fs')
+import fs from 'fs'
 
-exports.execute = (filePath) => {
+export const readFile = (filePath: string) => {
   const fileData = fs.readFileSync(filePath, 'utf8')
   return fileData.split('\n')
 }
