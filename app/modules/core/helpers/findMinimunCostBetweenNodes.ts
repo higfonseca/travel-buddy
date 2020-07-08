@@ -3,7 +3,7 @@
  * @description using Dijkstra's algorithm to find the shortest paths between nodes in a grapho.
  */
 
-export interface DijkstraResponse {
+export interface MinimumCostResponse {
   path: string[]
   distance: number
 }
@@ -23,7 +23,7 @@ export const findMinimunCostBetweenNodes = (
     graph: object,
     startNodeName = 'start',
     endNodeName = 'finish'
-  ): DijkstraResponse => {
+  ): MinimumCostResponse => {
 
   let costs = {}
   costs[endNodeName] = Infinity

@@ -1,18 +1,20 @@
-import { readFile } from '../../../core/helpers/handleFile'
+import { readFile, writeFile } from '../../../core/helpers/handleFile'
 import { Flight } from "../entities/Flight"
 import { removeUndefined } from "../../../core/helpers/removeUndefined"
 
 export class FlightRepository {
-  private fileLines: string[]
+  private flightsFile: string
   private flights: Flight[]
 
-  constructor (flightsFilePath: string) {
-    this.fileLines = readFile(flightsFilePath)
-    this.flights = this.listFlights()
+  constructor (flightsFile: string) {
+    this.flightsFile = flightsFile
+
+    const fileLines = readFile(flightsFile)
+    this.flights = this.listFlights(fileLines)
   }
 
-  listFlights (): Flight[] {
-    const flights: (Flight | undefined)[] = this.fileLines.map(line => {
+  listFlights (fileLines: string[]): Flight[] {
+    const flights: (Flight | undefined)[] = fileLines.map(line => {
       const item = line.split(',')
       return {
         departure: item[0],
@@ -35,5 +37,9 @@ export class FlightRepository {
 
   findFlightsDepartingFrom (airport: string): Flight[] {
     return this.flights.filter(flight => flight.departure === airport)
+  }
+
+  save (data: string): void {
+    writeFile(this.flightsFile, data)
   }
 }
