@@ -7,7 +7,7 @@ clear()
 const args = process.argv.slice(2)
 const cli = readline.createInterface({ input: process.stdin, output: process.stdout })
 
-if (!args.length) throw 'please, inform the CSV file path to start.'
+if (!args.length) throw 'please, inform the CSV file name to start.'
 
 cli.question('please enter the route: ', (itinerary: string) => {
   const flightRepository = new FlightRepository(args[0])
