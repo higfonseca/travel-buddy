@@ -1,24 +1,35 @@
-import express from 'express'
-import cors from 'cors'
-import { Routes } from './Routes'
+import http from 'http'
+import { CoreController } from './modules/core/input/controllers/CoreController'
+import { FlightController } from './modules/flight/input/controllers/FlightController'
+import { logger } from './modules/core/helpers/logger'
 
 export class Server {
-  public express: express.Application
+  /**
+   * Since there was a request to avoid using frameworks and it's a very simple application, I chose a more straight forward approach for routing.
+   * */
 
-  constructor () {
-    this.express = express()
+  start () {
+    return http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
+      const { url, method } = req
 
-    this.middlewares()
-    this.routes()
-  }
+      const coreController = new CoreController()
+      const flightController = new FlightController()
 
-  private middlewares (): void {
-    this.express.use(express.json())
-    this.express.use(cors())
-  }
+      if (url === '/healthcheck' && method === 'GET') {
+        const output = coreController.healthCheck(req, res)
+        return output
+      }
 
-  private routes (): void {
-    const routes = new Routes()
-    this.express.use(routes.execute)
+      if (url === '/routes/best' && method === 'POST') {
+        const output = flightController.bestRoute(req, res)
+        return output
+      }
+
+      // invalid URL/method
+      logger('INVALID URL - Request type: ' + req.method + ' Endpoint: ' + req.url)
+      res.statusCode = 404
+      res.end()
+      return
+    })
   }
 }

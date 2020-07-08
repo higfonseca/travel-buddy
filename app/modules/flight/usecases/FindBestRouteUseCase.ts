@@ -1,40 +1,29 @@
-import {
-  ParseFlightsUseCase,
-  SetDepartureArrivalUseCase,
-  ListAirportsUseCase,
-  FindFlightsDepartingFromAirportUseCase
-} from 'app/modules/flight/usecases'
-import { dijkstra, DijkstraResponse } from '../../core/helpers/dijkstra'
-import { FlightInterface } from '../domain/interfaces/FlightInterface'
-import { readFile } from '../../core/helpers/readFile'
+import { FlightRepository } from '../infra/repositories/FlightRepository'
+import { SetDepartureArrivalUseCase } from 'app/modules/flight/usecases'
+import { findMinimunCostBetweenNodes, DijkstraResponse } from '../../core/helpers/findMinimunCostBetweenNodes'
 
 export class FindBestRouteUseCase {
   constructor (
-    private readonly parseFlightsUseCase: ParseFlightsUseCase,
-    private readonly setDepartureArrivalUseCase: SetDepartureArrivalUseCase,
-    private readonly listAirportsUseCase: ListAirportsUseCase,
-    private readonly findFlightsDepartingFromAirportUseCase: FindFlightsDepartingFromAirportUseCase,
+    private readonly flightRepository: FlightRepository,
+    private readonly setDepartureArrivalUseCase: SetDepartureArrivalUseCase
   ) {}
 
-  execute (flightsFilePath: string, itinerary: string): DijkstraResponse {
-    const flightsFile = readFile(flightsFilePath)
-    const flights = this.parseFlightsUseCase.execute(flightsFile)
-
+  execute (itinerary: string): DijkstraResponse {
     const { from, to } = this.setDepartureArrivalUseCase.execute(itinerary)
-    const airports = this.listAirportsUseCase.execute(flights)
+    const airports = this.flightRepository.listAirports()
 
-    const start = this.findFirstFlights(from, flights)
-    const connections = this.findConnectionFlights(airports, from, flights)
+    const start = this.findFirstFlights(from)
+    const connections = this.findConnectionFlights(airports, from)
 
     const graph = { ...start, ...connections }
-    const bestRoute = dijkstra(graph, from, to)
+    const bestRoute = findMinimunCostBetweenNodes(graph, from, to)
 
     if (bestRoute.distance === Infinity) throw 'unable to locate best route. Please, try again...'
     return bestRoute
   }
 
-  private findFirstFlights (from: string, flights: FlightInterface[]) {
-    const fromDeparture = this.findFlightsDepartingFromAirportUseCase.execute(from, flights)
+  private findFirstFlights (from: string) {
+    const fromDeparture = this.flightRepository.findFlightsDepartingFrom(from)
     const firstFlights = {}
     fromDeparture.map(item => {
       firstFlights[item.destination] = item.cost
@@ -46,11 +35,11 @@ export class FindBestRouteUseCase {
     return start
   }
 
-  private findConnectionFlights (airports: string[], from: string, flights: FlightInterface[]) {
+  private findConnectionFlights (airports: string[], from: string) {
     const otherAirports = airports.filter(airport => airport !== from)
 
     const secondFlights = otherAirports.map(item => {
-      return this.findFlightsDepartingFromAirportUseCase.execute(item, flights)
+      return this.flightRepository.findFlightsDepartingFrom(item)
     })
     const mergedSecondFlights = [].concat.apply([], secondFlights)
 
