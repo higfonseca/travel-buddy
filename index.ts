@@ -1,9 +1,7 @@
-import clear from 'clear'
 import readline from 'readline'
 import { FlightRepository } from './app/modules/flight/infra/repositories/FlightRepository'
 import { FindBestRouteUseCase, SetDepartureArrivalUseCase } from './app/modules/flight/usecases'
 
-clear()
 const args = process.argv.slice(2)
 const cli = readline.createInterface({ input: process.stdin, output: process.stdout })
 
