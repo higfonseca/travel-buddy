@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Best route finder based on a CSV route file.",
   "main": "./index.js",
-  "bin": {
-    "travelbuddy": "bin/travelbuddy"
-  },
   "scripts": {
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
