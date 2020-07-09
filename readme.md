@@ -46,3 +46,6 @@ Inserir o arquivo de rotas no diretório da aplicação.
 ```bash
 $ node travelbuddy input-file.csv
 ```
+### Testing
+npm run test:coverage
+coverage directory

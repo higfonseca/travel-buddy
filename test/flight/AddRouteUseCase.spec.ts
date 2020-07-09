@@ -15,13 +15,29 @@ describe('Flight :: AddRouteUseCase', () => {
     addRouteUseCase = new AddRouteUseCase(flightRepository)
   })
 
+  describe('Success', () => {
+    it('calls save method on FlightRepository with the correct parameter', () => {
+      const from = 'GRU'
+      const to = 'UDI'
+      const cost = 13
+
+      request = { from, to, cost }
+
+      flightRepository.save = jest.fn()
+      addRouteUseCase.execute(request)
+
+      const routeString = `${from},${to},${cost}`
+      expect(flightRepository.save).toHaveBeenCalledWith(routeString)
+    })
+  })
+
   describe('Invalid input', () => {
     it('returns statusCode 400 and an "invalid input" error message', () => {
       // @ts-ignore
       request = {}
       const response = addRouteUseCase.execute(request)
 
-      expect(response).toHaveProperty('error')
+      expect(response.statusCode).toBe(400)
       expect(response.error).toBe(ErrorMessages.flight.invalidInputAddRoute)
     })
   })

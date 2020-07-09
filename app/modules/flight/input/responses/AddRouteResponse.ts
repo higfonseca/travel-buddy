@@ -11,7 +11,7 @@ export interface AddRouteResponse {
     route: {
       from: string
       to: string
-      cost: string
+      cost: number
     }
   }
 }

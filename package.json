@@ -6,9 +6,10 @@
   "scripts": {
     "clean": "rm -rf dist node_modules",
     "test": "jest --no-cache",
+    "test:coverage": "jest --collectCoverage",
     "tsc": "tsc",
     "build": "npm run clean && npm install && tsc -p .",
-    "prod": "tsc && node ./dist/app/App.js",
+    "start:prod": "tsc && node ./dist/app/App.js",
     "cli": "tsc && node ./dist/index.js"
   },
   "repository": {

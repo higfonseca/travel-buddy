@@ -23,6 +23,7 @@ export class FindBestRouteUseCase {
     const graph = { ...start, ...connections }
     const bestRoute = findMinimunCostBetweenNodes(graph, from, to)
 
+    // returning a 404 because supposedly the searched route does not exists
     if (bestRoute.distance === Infinity) this.handleError(cli, 404, ErrorMessages.flight.routeNotFound)
     return { data: bestRoute }
   }
