@@ -27,11 +27,13 @@ export class FlightRepository {
   }
 
   listAirports (): string[] {
-    const airportsFrom = this.flights.map(flight => flight.departure)
-    const airportsTo = this.flights.map(flight => flight.destination)
-    const airportsAll = [...airportsFrom, ...airportsTo]
+    let airports: string[] = []
+    this.flights.map(flight => {
+      airports.push(flight.departure)
+      airports.push(flight.destination)
+    })
 
-    const airportsWithoutUndefined = removeUndefined<string[]>(airportsAll)
+    const airportsWithoutUndefined = removeUndefined<string[]>(airports)
     return [...new Set(airportsWithoutUndefined)]
   }
 

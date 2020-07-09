@@ -5,7 +5,7 @@
   "main": "./index.js",
   "scripts": {
     "clean": "rm -rf dist node_modules",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --no-cache",
     "tsc": "tsc",
     "build": "npm run clean && npm install && tsc -p .",
     "prod": "tsc && node ./dist/app/App.js",
@@ -22,8 +22,12 @@
   },
   "homepage": "https://github.com/higfonseca/travel-buddy#readme",
   "dependencies": {
+    "@types/jest": "^26.0.4",
     "@types/node": "^14.0.19",
-    "typescript": "^3.9.6"
+    "@types/sinon": "^9.0.4",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.1",
+    "typescript": "3.7.5"
   },
   "devDependencies": {}
 }
