@@ -47,9 +47,9 @@ do usuário e retorna respostas. Por isso não foi criado um teste de unidade pa
 ---
 
 ## **ATENÇÃO:**
-O arquivo de rotas (input-file.csv) deve ser colocado no diretório raiz da aplicação antes da execução de qualquer interface (CLI ou Rest).
+O arquivo de rotas (input-file.csv) deve ser colocado no diretório raiz do projeto antes da execução de qualquer interface (CLI ou Rest).
 
-Os comandos abaixo devem ser executados no diretório da aplicação.
+Os comandos abaixo devem ser executados no diretório raiz do projeto.
 
 
 ### **Initial Setup**
