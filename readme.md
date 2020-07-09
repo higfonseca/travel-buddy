@@ -29,6 +29,8 @@ Encontre a opção de conexão mais barata para voar entre 2 aeroportos.
 
 ## **Comentários Gerais:**
 
+Inicialmente acho importante dizer que apesar das instruções darem como exemplo a rota 4 como de menor custo, em todas as tentativas que fiz seguindo o arquivo exemplo de rotas, a melhor opção seria a rota 1 ($48 na rota 4 vs $40 na rota 1).
+
 Por oferecer um desacoplamento maior entre componentes (controllers separados de regras de negócio, separadas dos repositórios), o design adotado foi o Clean Architecture.
 
 Sobre o Typescript, acredito que não há muito o que explicar: códigos "type safe" são muito menos passivos de bugs. Por esse motivo foi a única lib que usei no projeto (fora o Jest).

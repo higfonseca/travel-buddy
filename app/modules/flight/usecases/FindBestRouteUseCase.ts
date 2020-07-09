@@ -24,12 +24,12 @@ export class FindBestRouteUseCase {
     const bestRoute = findMinimunCostBetweenNodes(graph, from, to)
 
     // returning a 404 because supposedly the searched route does not exists
-    if (bestRoute.distance === Infinity) this.handleError(cli, 404, ErrorMessages.flight.routeNotFound)
+    if (bestRoute.distance === Infinity) return this.handleError(cli, 404, ErrorMessages.flight.routeNotFound)
     return { data: bestRoute }
   }
 
   private setDepartureArrival (
-    itinerary: string = '',
+    itinerary: string,
     cli: boolean
   ): DepartureArrivalInterface | FindBestRouteResponse {
     const depArrival = itinerary.split('-')
@@ -47,6 +47,7 @@ export class FindBestRouteUseCase {
 
   private findFirstFlights (from: string) {
     const fromDeparture = this.flightRepository.findFlightsDepartingFrom(from)
+
     let firstFlights = {}
     fromDeparture.map(item => {
       firstFlights[item.destination] = item.cost

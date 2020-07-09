@@ -1,8 +1,8 @@
-import { FlightRepository } from "../../app/modules/flight/infra/repositories/FlightRepository"
-import { AddRouteRequest } from "../../app/modules/flight/input/requests/AddRouteRequest"
-import { AddRouteUseCase } from "../../app/modules/flight/usecases"
-import { ErrorMessages } from "../../app/modules/core/utils/ErrorMessages"
-import { stub } from "../utils/stub"
+import { FlightRepository } from '../../app/modules/flight/infra/repositories/FlightRepository'
+import { AddRouteRequest } from '../../app/modules/flight/input/requests/AddRouteRequest'
+import { AddRouteUseCase } from '../../app/modules/flight/usecases'
+import { ErrorMessages } from '../../app/modules/core/utils/ErrorMessages'
+import { stub } from '../utils/stub'
 
 
 describe('Flight :: AddRouteUseCase', () => {

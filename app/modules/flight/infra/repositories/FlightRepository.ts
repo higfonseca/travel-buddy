@@ -1,6 +1,6 @@
 import { readFile, writeFile } from '../../../core/helpers/handleFile'
-import { Flight } from "../entities/Flight"
-import { removeUndefined } from "../../../core/helpers/removeUndefined"
+import { Flight } from '../entities/Flight'
+import { removeUndefined } from '../../../core/helpers/removeUndefined'
 
 export class FlightRepository {
   private flightsFile: string

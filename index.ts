@@ -14,6 +14,6 @@ cli.question('please enter the route: ', (itinerary: string) => {
   const output = new FindBestRouteUseCase(flightRepository).execute(itinerary, true)
 
   const { path, distance } = output.data as MinimumCostResponse
-  cli.write(`best route: ${path.join(' - ')} > ${distance} \n`)
+  cli.write(`best route: ${path.join(' - ')} > $${distance} \n`)
   cli.close()
 })

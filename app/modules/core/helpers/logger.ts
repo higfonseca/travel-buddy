@@ -1,7 +1,7 @@
-import { NODE_ENV } from "../../../Environment"
+import { NODE_ENV } from '../../../Environment'
 
 /**
- * Adding logging though a helper so it can be easly replaced by a
+ * Adding logging through a helper so it can be easly replaced by a
  * better loggin lib (Winston, for example)
  */
 

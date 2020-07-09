@@ -1,6 +1,6 @@
-import { HOSTNAME, PORT } from "./Environment"
-import { Server } from "./Server"
-import { logger } from "./modules/core/helpers/logger"
+import { HOSTNAME, PORT } from './Environment'
+import { Server } from './Server'
+import { logger } from './modules/core/helpers/logger'
 
 class App {
 	start () {

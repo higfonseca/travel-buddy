@@ -1,4 +1,4 @@
-import { MinimumCostResponse } from "../../../core/helpers/findMinimunCostBetweenNodes";
+import { MinimumCostResponse } from '../../../core/helpers/findMinimunCostBetweenNodes';
 
 export interface FindBestRouteResponse {
   statusCode?: number
