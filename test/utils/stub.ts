@@ -1,3 +1,4 @@
+// @ts-nocheck
 const stub = <T extends any> (): T => {
   const typeAssertion = <T>{}
 
